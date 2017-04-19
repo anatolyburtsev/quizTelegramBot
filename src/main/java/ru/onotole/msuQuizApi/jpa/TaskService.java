@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.onotole.msuQuizApi.model.Task;
 
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -26,10 +25,6 @@ public class TaskService {
 
     public Task getTask(Integer id) {
         return taskRepository.findOne(id);
-    }
-
-    public Task addTask(Task task) {
-        return taskRepository.save(task);
     }
 
     public List<Task> getAll() {
@@ -59,6 +54,10 @@ public class TaskService {
         Integer answer = Integer.valueOf(taskLine.split(delimiter)[1]);
         task.setAnswer(answer);
         addTask(task);
+    }
+
+    public void addTask(Task task) {
+        taskRepository.save(task);
     }
 
 }

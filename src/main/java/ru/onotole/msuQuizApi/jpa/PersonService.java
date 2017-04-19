@@ -44,18 +44,38 @@ public class PersonService {
 
     public Task checkAndNextQuestion(Long id, Integer answer) {
         Person person = getByUserId(id);
-        if (Objects.equals(person.getExpectedAnswer(), answer)) {
-            person.inc();
-        }
-        Integer nextTaskNumber = person.getNextTaskNumber();
         Task resultTask;
-        if (nextTaskNumber < 0) {
-            resultTask = new Task(0, person.finish(), 0);
+
+        if (Objects.equals(person.getExpectedAnswer(), answer)) {
+            //right answer
+            person.addWinPoint();
+            Integer nextTaskNumber = person.getNextTaskNumber();
+            if (nextTaskNumber < 0) {
+                //right answer, no more question
+                resultTask = new Task(0, person.finish(), 0);
+            } else {
+                //right answer, not last question
+                resultTask = taskService.getTask(nextTaskNumber);
+                resultTask.addDescriptionPrefix("Верный ответ! следующее задание:\n");
+            }
+            person.setExpectedAnswer(resultTask.getAnswer());
         } else {
-            resultTask = taskService.getTask(nextTaskNumber);
+           if (person.getAttemptCounter().isAttemptLeft()) {
+               // wrong answer, not last attempt
+                resultTask = new Task(0, String.format("Ответ неверный. Осталось %s попыток",
+                        person.getAttemptCounter()).get()), 0);
+           } else {
+               // wrong answer, no more attempts
+
+           }
         }
+
         personRepository.save(person);
         return resultTask;
+    }
+
+    public void clear() {
+        personRepository.deleteAll();
     }
 
     private String getShuffledListString(int size) {

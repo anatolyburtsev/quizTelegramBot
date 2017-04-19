@@ -50,10 +50,16 @@ public class TaskController {
 
     @RequestMapping(value = "/task/reload", method = RequestMethod.POST)
     public String reloadTasks() {
+        return reloadTasksFromFile(fileWithTasks);
+    }
+
+    @RequestMapping(value = "/task/reload?file={file}", method = RequestMethod.POST)
+    public String reloadTasksFromFile(@PathVariable String file) {
         taskService.clear();
-        Path path = FileSystems.getDefault().getPath(fileWithTasks);
+        Path path = FileSystems.getDefault().getPath(file);
         taskService.reloadTasks(path);
         return "Loaded " + getAll().size() + " tasks";
     }
+
 
 }

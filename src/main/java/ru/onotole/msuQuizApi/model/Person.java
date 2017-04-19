@@ -1,6 +1,5 @@
 package ru.onotole.msuQuizApi.model;
 
-import com.sun.deploy.util.StringUtils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,7 +7,8 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
-import java.util.List;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 /**
  * Created by onotole on 16/04/2017.
@@ -26,22 +26,40 @@ public class Person {
     private String taskOrder;
     private Integer expectedAnswer;
     private Integer balls = 0;
-
-    public void inc() {
+    private LocalDateTime start = LocalDateTime.now();
+    private LocalDateTime finish;
+    private AttemptCounter attemptCounter = new AttemptCounter();
+    public void addWinPoint() {
         balls++;
     }
 
     public Integer getNextTaskNumber() {
-        if (taskOrder.length() < 1) {
-            return -1;
+        Integer nextTaskNumber;
+        switch (taskOrder.length()) {
+            case 0:
+                nextTaskNumber = -1;
+                break;
+            case 1:
+                nextTaskNumber = Integer.valueOf(taskOrder);
+                taskOrder = "";
+                break;
+            default:
+                nextTaskNumber = Integer.valueOf(taskOrder.split(",")[0]);
+                taskOrder = taskOrder.replaceFirst("\\d+,","");
         }
-        Integer nextTaskNumber = Integer.valueOf(taskOrder.split(",")[0]);
-        taskOrder = taskOrder.replace("\\d+,","");
+        attemptCounter.reset();
         return nextTaskNumber;
     }
 
     public String finish() {
-        return "Поздравляю! Ты прошел игру и набрал " + balls + " баллов!";
+        if (finish == null) {
+            finish = LocalDateTime.now();
+        }
+        Duration delta = Duration.between(start, finish);
+        long hours = delta.toHours();
+        long minutes = delta.toMinutes() % 60;
+        long seconds = delta.getSeconds() % 60;
+        return String.format("Поздравляю! Ты прошел игру за %d:%d:%d и набрал %d баллов!", hours, minutes, seconds, balls);
     }
 
 }

@@ -26,4 +26,8 @@ public class Task {
     private Integer id;
     private String description;
     private Integer answer;
+
+    public void addDescriptionPrefix(String prefix) {
+        description = prefix + "\n" + description;
+    }
 }

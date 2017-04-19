@@ -1,8 +1,6 @@
 package ru.onotole.msuQuizApi;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,21 +10,14 @@ import ru.onotole.msuQuizApi.controller.PersonController;
 import ru.onotole.msuQuizApi.controller.TaskController;
 import ru.onotole.msuQuizApi.jpa.PersonRepository;
 import ru.onotole.msuQuizApi.jpa.PersonService;
-import ru.onotole.msuQuizApi.jpa.TaskService;
 import ru.onotole.msuQuizApi.model.Person;
 
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 /**
- * Created by onotole on 16/04/2017.
+ * Created by onotole on 18/04/2017.
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class TasksTest {
+public class AttemptsTest {
     private Person person;
     private Long uid = 100L;
     private Integer[] answers = new Integer[]{4,27,9,1024};
@@ -36,9 +27,6 @@ public class TasksTest {
 
     @Autowired
     private TaskController taskController;
-
-    @Autowired
-    private TaskService taskService;
 
     @Autowired
     private PersonService personService;
@@ -61,13 +49,7 @@ public class TasksTest {
     }
 
     @Test
-    public void checkExist() {
-        assertEquals(personController.getAll().size(), 1);
-    }
-
-    @Test
-    public void checkUserExistWithCorrectUID() {
-        assertEquals(personController.getAll().get(0).getId(), uid);
+    public void checkAttemptCount() {
     }
 
 }
