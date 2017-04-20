@@ -28,8 +28,7 @@ import static org.junit.Assert.assertNotNull;
 @SpringBootTest
 public class TasksTest {
     private Person person;
-    private Long uid = 100L;
-    private Integer[] answers = new Integer[]{4,27,9,1024};
+    private Long uid = 104L;
 
     @Autowired
     private PersonController personController;

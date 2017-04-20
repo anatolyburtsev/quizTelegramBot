@@ -20,15 +20,19 @@ import java.time.LocalDateTime;
 @ToString
 @Accessors(chain = true)
 public class Person {
+    public static final Integer POST_LAST_TASK_ANSWER_FLAG = -1;
+    public static final Integer INITIAL_TASK_ANSWER_FLAG = -2;
+    public static final Integer DEFAULT_ATTEMPTS = 3;
+
     @Id
     private Long id;
     // 3,1,4,2
     private String taskOrder;
-    private Integer expectedAnswer;
+    private Integer expectedAnswer = INITIAL_TASK_ANSWER_FLAG;
     private Integer balls = 0;
     private LocalDateTime start = LocalDateTime.now();
     private LocalDateTime finish;
-    private AttemptCounter attemptCounter = new AttemptCounter();
+    private Integer attemptCounter = DEFAULT_ATTEMPTS;
     public void addWinPoint() {
         balls++;
     }
@@ -47,8 +51,26 @@ public class Person {
                 nextTaskNumber = Integer.valueOf(taskOrder.split(",")[0]);
                 taskOrder = taskOrder.replaceFirst("\\d+,","");
         }
-        attemptCounter.reset();
+        reset();
         return nextTaskNumber;
+    }
+
+    public void reset() {
+        attemptCounter = DEFAULT_ATTEMPTS;
+    }
+
+    public boolean makeAttempt() {
+        attemptCounter--;
+        if (attemptCounter < 1) {
+            return false;
+        } else {
+           return true;
+        }
+    }
+
+
+    public Integer getAttemptCounter() {
+        return attemptCounter;
     }
 
     public String finish() {
@@ -59,7 +81,7 @@ public class Person {
         long hours = delta.toHours();
         long minutes = delta.toMinutes() % 60;
         long seconds = delta.getSeconds() % 60;
-        return String.format("Поздравляю! Ты прошел игру за %d:%d:%d и набрал %d баллов!", hours, minutes, seconds, balls);
+        return String.format(Phrases.CONGRATUATION, hours, minutes, seconds, balls);
     }
 
 }

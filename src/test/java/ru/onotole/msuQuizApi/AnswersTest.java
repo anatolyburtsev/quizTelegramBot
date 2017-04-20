@@ -26,8 +26,8 @@ import static org.junit.Assert.assertNotNull;
 @SpringBootTest
 public class AnswersTest {
     private Person person;
-    private Long uid = 100L;
-    private Integer[] answers = new Integer[]{4,27,9,1024};
+    private Long uid = 101L;
+    private String[] answers = new String[]{"4","27","9","1024"};
 
     @Autowired
     private PersonController personController;
@@ -57,7 +57,7 @@ public class AnswersTest {
 
     @Test
     public void checkAnswersTest() {
-        personController.startGuess(uid);
+        personController.tryToGuess(uid, null);
         person = personController.getUser(uid);
         assertEquals("2,3,4", person.getTaskOrder());
         assertEquals("" + person.getExpectedAnswer(), "" + answers[0]);

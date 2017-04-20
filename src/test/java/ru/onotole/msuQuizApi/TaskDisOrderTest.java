@@ -12,15 +12,16 @@ import ru.onotole.msuQuizApi.jpa.PersonRepository;
 import ru.onotole.msuQuizApi.jpa.PersonService;
 import ru.onotole.msuQuizApi.model.Person;
 
+import static org.junit.Assert.assertNotEquals;
+
 /**
  * Created by onotole on 18/04/2017.
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class AttemptsTest {
+public class TaskDisOrderTest {
     private Person person;
-    private Long uid = 100L;
-    private Integer[] answers = new Integer[]{4,27,9,1024};
+    private Long uid = 103L;
 
     @Autowired
     private PersonController personController;
@@ -44,12 +45,11 @@ public class AttemptsTest {
         personService.clear();
         personController.addUser(new Person().setId(uid));
         person = personController.getUser(uid);
-        person.setTaskOrder("1,2,3,4");
-        personRepository.save(person);
     }
 
     @Test
     public void checkAttemptCount() {
+        assertNotEquals("1,2,3,4", person.getTaskOrder());
     }
 
 }
