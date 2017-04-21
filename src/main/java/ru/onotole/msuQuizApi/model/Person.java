@@ -22,12 +22,14 @@ import java.time.LocalDateTime;
 public class Person {
     public static final Integer POST_LAST_TASK_ANSWER_FLAG = -1;
     public static final Integer INITIAL_TASK_ANSWER_FLAG = -2;
-    public static final Integer DEFAULT_ATTEMPTS = 3;
+    public static final String WAITING_COMMAND_NAME_ANSWER_FLAG = "WAITING FOR COMMAND NAME 42";
+    public static final String EMPTY_COMMAND_NAME_ANSWER_FLAG = "EMPTY COMMAND NAME 42";
+    public static final Integer DEFAULT_ATTEMPTS = 3; //Integer.valueOf(System.getProperty("default_attempts_count"));
 
     @Id
     private Long id;
-    // 3,1,4,2
-    private String taskOrder;
+    private String commandName = EMPTY_COMMAND_NAME_ANSWER_FLAG;
+    private String taskOrder; // 3,1,4,2
     private Integer expectedAnswer = INITIAL_TASK_ANSWER_FLAG;
     private Integer balls = 0;
     private LocalDateTime start = LocalDateTime.now();
@@ -81,7 +83,7 @@ public class Person {
         long hours = delta.toHours();
         long minutes = delta.toMinutes() % 60;
         long seconds = delta.getSeconds() % 60;
-        return String.format(Phrases.CONGRATUATION, hours, minutes, seconds, balls);
+        return String.format(Phrases.CONGRATULATION, getCommandName(), hours, minutes, seconds, balls);
     }
 
 }

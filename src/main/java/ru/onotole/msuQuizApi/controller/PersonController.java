@@ -29,19 +29,8 @@ public class PersonController {
 
     @RequestMapping(value = "/user/{id}/guess", method = RequestMethod.POST)
     public Task tryToGuess(@PathVariable Long id, @RequestParam String answer) {
-        Integer answerInt = 0;
-        try {
-            answerInt = Integer.valueOf(answer);
-        } catch (NumberFormatException e) {
-            answerInt = 0;
-        }
-        return personService.checkAndNextQuestion(id, answerInt);
+        return personService.checkAndNextQuestion(id, answer);
     }
-
-//    @RequestMapping(value = "/user/{id}/guess/", method = RequestMethod.POST)
-//    public Task startGuess(@PathVariable Long id) {
-//        return personService.checkAndNextQuestion(id, 0);
-//    }
 
     @RequestMapping(value = "/user/", method = RequestMethod.GET)
     public List<Person> getAll() {

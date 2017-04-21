@@ -45,15 +45,43 @@ public class PersonService {
     }
 
 
-    public Task checkAndNextQuestion(Long id, Integer answer) {
+    public Task checkAndNextQuestion(Long id, String answerInputed) {
         Person person = getByUserId(id);
         Task resultTask;
+        Integer answer;
 
-        // welcome
-        if (Objects.equals(person.getExpectedAnswer(), Person.INITIAL_TASK_ANSWER_FLAG)) {
-            resultTask = getNextTask(person);
-            resultTask.addDescriptionPrefix(String.format(Phrases.WELCOME, Person.DEFAULT_ATTEMPTS));
+        if (person == null) {
+            add(new Person().setId(id));
+            person = getByUserId(id);
+        }
+
+        // Start или что-то типа того пришло
+        if (person.getCommandName().equals(Person.EMPTY_COMMAND_NAME_ANSWER_FLAG)) {
+            person.setCommandName(Person.WAITING_COMMAND_NAME_ANSWER_FLAG);
+            personRepository.save(person);
+            resultTask = new Task(0, Phrases.WELCOME,0);
+            return resultTask;
         } else
+
+        // пришло название команды
+        if (person.getCommandName().equals(Person.WAITING_COMMAND_NAME_ANSWER_FLAG)) {
+            person.setCommandName(answerInputed);
+            personRepository.save(person);
+            resultTask = getNextTask(person);
+            resultTask.addDescriptionPrefix(String.format(Phrases.LETS_START_GAME, Person.DEFAULT_ATTEMPTS));
+            return resultTask;
+        }
+
+        try {
+            answer = Integer.valueOf(answerInputed);
+        } catch (NumberFormatException e) {
+            // пришло не число
+            // некорректный ввод, название команды задано и оно не дефолтное
+            if (person.getCommandName() != null && ! person.getCommandName().equals(Person.WAITING_COMMAND_NAME_ANSWER_FLAG)) {
+                return new Task(0, Phrases.INCORRECT_INPUT, 0);
+            }
+            throw new RuntimeException("что-то явно пошло не так!");
+        }
 
         //finished game
         if (Objects.equals( person.getExpectedAnswer(), Person.POST_LAST_TASK_ANSWER_FLAG)) {
@@ -98,6 +126,7 @@ public class PersonService {
             resultTask = taskService.getTask(nextTaskNumber);
         }
         person.setExpectedAnswer(resultTask.getAnswer());
+        personRepository.save(person);
         return resultTask;
     }
 

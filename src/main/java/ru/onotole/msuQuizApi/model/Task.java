@@ -27,6 +27,10 @@ public class Task {
     private String description;
     private Integer answer;
 
+    public Task(String description) {
+        this.description = description;
+    }
+
     public void addDescriptionPrefix(String prefix) {
         description = prefix + "\n" + description;
     }
