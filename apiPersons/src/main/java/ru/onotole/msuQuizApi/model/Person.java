@@ -79,8 +79,6 @@ public class Person {
         if (finish == null) {
             finish = LocalDateTime.now();
         }
-        log.error("XXXX" + start);
-        log.error("XXXX" + finish);
         Duration delta = Duration.between(start, finish);
         long hours = delta.toHours();
         long minutes = delta.toMinutes() % 60;
