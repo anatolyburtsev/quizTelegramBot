@@ -47,7 +47,12 @@ public class TaskController {
 //    }
 
     @RequestMapping(value = "/task/reload", method = RequestMethod.POST)
-    public String reloadTasks() {
-        return taskService.reloadTasks();
+    public String reloadTasks(@RequestParam(value = "file", required = false) String file) {
+        if (file != null) {
+            return taskService.reloadTasksByStringPath(file);
+        } else {
+            return taskService.reloadTasks();
+        }
     }
+
 }
