@@ -38,8 +38,7 @@ public class TaskControllerTest {
     @Test
     public void taskNumber() {
         taskController.reloadTasks(null);
-        Integer taskId = taskController.getAll().get(0).getId();
-        assertEquals(taskController.getTaskById(taskId), task);
+        assertEquals(taskController.getTaskById(1), task);
     }
 
 }

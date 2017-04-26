@@ -1,5 +1,4 @@
 import com.google.gson.Gson;
-import com.sun.org.apache.regexp.internal.RE;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

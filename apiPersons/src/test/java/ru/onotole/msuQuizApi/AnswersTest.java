@@ -12,8 +12,14 @@ import ru.onotole.msuQuizApi.jpa.PersonService;
 import ru.onotole.msuQuizApi.jpa.TaskService;
 import ru.onotole.msuQuizApi.model.Person;
 
+import java.util.Arrays;
+import java.util.Deque;
+import java.util.LinkedList;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by onotole on 18/04/2017.
@@ -23,7 +29,7 @@ import static org.junit.Assert.assertNotNull;
 public class AnswersTest {
     private Person person;
     private Long uid = 101L;
-    private String[] answers = new String[]{"4","27","9","1024"};
+    private String[] answers = {"4","27","9","1024"};
 
     @Autowired
     private PersonController personController;
@@ -43,7 +49,9 @@ public class AnswersTest {
         personService.clear();
         personController.addUser(new Person().setId(uid));
         person = personController.getUser(uid);
-        person.setTaskOrder("0,1,2,3");
+        LinkedList<Integer> deque = new LinkedList<>();
+        deque.addAll(Arrays.asList(0,1,2,3));
+        person.setTaskOrder(deque);
         personRepository.save(person);
     }
 
@@ -53,17 +61,15 @@ public class AnswersTest {
         person = personController.getUser(uid);
         personController.tryToGuess(uid, "commandName");
         person = personController.getUser(uid);
-        assertEquals("1,2,3", person.getTaskOrder());
         assertEquals("" + person.getExpectedAnswer(), "" + answers[0]);
         personController.tryToGuess(uid, answers[0]);
         person = personController.getUser(uid);
-        assertEquals("2,3", person.getTaskOrder());
         assertEquals("" + person.getExpectedAnswer(), "" + answers[1]);
         personController.tryToGuess(uid, answers[1]);
         person = personController.getUser(uid);
         personController.tryToGuess(uid, answers[2]);
         person = personController.getUser(uid);
-        assertEquals("", person.getTaskOrder());
+        assertTrue(person.getTaskOrder().isEmpty());
         assertEquals("" + person.getExpectedAnswer(), "" + answers[3]);
     }
 }

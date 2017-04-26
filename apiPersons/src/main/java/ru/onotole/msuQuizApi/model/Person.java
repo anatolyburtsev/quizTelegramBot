@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import javax.persistence.*;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Deque;
+import java.util.LinkedList;
 
 /**
  * Created by onotole on 16/04/2017.
@@ -31,7 +33,7 @@ public class Person {
     @Id
     private Long id;
     private String commandName = EMPTY_COMMAND_NAME_ANSWER_FLAG;
-    private String taskOrder; // 3,1,0,2
+    private LinkedList<Integer> taskOrder;
     private Integer expectedAnswer = INITIAL_TASK_ANSWER_FLAG;
     private Integer balls = 0;
     private LocalDateTime start = LocalDateTime.now();
@@ -43,16 +45,11 @@ public class Person {
 
     public Integer getNextTaskNumber() {
         Integer nextTaskNumber;
-        if (taskOrder.contains(",")) {
-            nextTaskNumber = Integer.valueOf(taskOrder.split(",")[0]);
-            taskOrder = taskOrder.replaceFirst("\\d+,","");
-        } else if (taskOrder.length() > 0) {
-            nextTaskNumber = Integer.valueOf(taskOrder);
-            taskOrder = "";
-        } else {
+        if (taskOrder.isEmpty()) {
             nextTaskNumber = POST_LAST_TASK_ANSWER_FLAG;
+        } else {
+            nextTaskNumber = taskOrder.pop();
         }
-
         resetAttemptsCounter();
         return nextTaskNumber;
     }
@@ -62,12 +59,7 @@ public class Person {
     }
 
     public boolean makeAttempt() {
-        attemptCounter--;
-        if (attemptCounter < 1) {
-            return false;
-        } else {
-           return true;
-        }
+        return --attemptCounter >= 1;
     }
 
 

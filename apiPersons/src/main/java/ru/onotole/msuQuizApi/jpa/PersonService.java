@@ -1,5 +1,6 @@
 package ru.onotole.msuQuizApi.jpa;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +10,7 @@ import ru.onotole.msuQuizApi.model.Phrases;
 import ru.onotole.msuQuizApi.model.Response;
 import ru.onotole.msuQuizApi.model.Task;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static ru.onotole.msuQuizApi.model.Person.POST_LAST_TASK_ANSWER_FLAG;
 import static ru.onotole.msuQuizApi.model.Phrases.NEXT_TASK;
@@ -22,13 +20,12 @@ import static ru.onotole.msuQuizApi.model.Phrases.NEXT_TASK;
  */
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class PersonService {
 
-    @Autowired
-    private PersonRepository personRepository;
+    private final PersonRepository personRepository;
 
-    @Autowired
-    private TaskService taskService;
+    private final TaskService taskService;
 
     public Person getByUserId(Long uid) {
         return personRepository.findOne(uid);
@@ -36,7 +33,7 @@ public class PersonService {
 
     public void add(Person person) {
         int taskCount = taskService.getTasksAmount();
-        String taskOrder = getShuffledListString(taskCount);
+        LinkedList<Integer> taskOrder = getShuffledDeque(taskCount);
         person.setTaskOrder(taskOrder);
         person.setBalls(0);
         personRepository.save(person);
@@ -145,15 +142,10 @@ public class PersonService {
         personRepository.deleteAll();
     }
 
-    private String getShuffledListString(int size) {
-        List<String> list = getShuffledList(size);
-        return StringUtils.join(list, ",");
-    }
-
-    private List<String> getShuffledList(int size) {
-        List<String> list = new ArrayList<>();
+    private LinkedList<Integer> getShuffledDeque(int size) {
+        LinkedList<Integer> list = new LinkedList<>();
         for (int i = 0; i < size; i++) {
-            list.add("" + i);
+            list.add(i);
         }
         Collections.shuffle(list);
         return list;

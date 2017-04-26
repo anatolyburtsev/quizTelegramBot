@@ -15,6 +15,9 @@ import ru.onotole.msuQuizApi.model.Phrases;
 import ru.onotole.msuQuizApi.model.Response;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Deque;
+import java.util.LinkedList;
 
 import static org.junit.Assert.assertEquals;
 import static ru.onotole.msuQuizApi.model.Phrases.NEXT_TASK;
@@ -54,7 +57,9 @@ public class MessagesTest {
         personService.clear();
         personController.addUser(new Person().setId(UID));
         person = personController.getUser(UID);
-        person.setTaskOrder("0,1,2,3");
+        LinkedList<Integer> deque = new LinkedList<>();
+        deque.addAll(Arrays.asList(0,1,2,3));
+        person.setTaskOrder(deque);
         personRepository.save(person);
     }
 

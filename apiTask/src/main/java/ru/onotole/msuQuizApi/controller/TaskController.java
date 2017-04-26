@@ -1,5 +1,6 @@
 package ru.onotole.msuQuizApi.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.onotole.msuQuizApi.model.Task;
@@ -11,10 +12,10 @@ import java.util.List;
  * Created by onotole on 16/04/2017.
  */
 @RestController
+@RequiredArgsConstructor
 public class TaskController {
 
-    @Autowired
-    private TaskService taskService;
+    private final TaskService taskService;
 
     @RequestMapping(value = "/task/{id}", method = RequestMethod.GET)
     public Task getTaskById(@PathVariable Integer id) {

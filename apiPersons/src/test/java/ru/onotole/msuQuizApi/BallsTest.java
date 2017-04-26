@@ -12,6 +12,10 @@ import ru.onotole.msuQuizApi.jpa.PersonService;
 import ru.onotole.msuQuizApi.jpa.TaskService;
 import ru.onotole.msuQuizApi.model.Person;
 
+import java.util.Arrays;
+import java.util.Deque;
+import java.util.LinkedList;
+
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -42,7 +46,9 @@ public class BallsTest {
         personService.clear();
         personController.addUser(new Person().setId(uid));
         person = personController.getUser(uid);
-        person.setTaskOrder("0,1,2,3");
+        LinkedList<Integer> deque = new LinkedList<>();
+        deque.addAll(Arrays.asList(0,1,2,3));
+        person.setTaskOrder(deque);
         personRepository.save(person);
         person = personController.getUser(uid);
         personController.tryToGuess(uid, "start");

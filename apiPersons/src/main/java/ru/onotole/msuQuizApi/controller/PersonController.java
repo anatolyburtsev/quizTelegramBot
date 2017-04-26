@@ -1,5 +1,6 @@
 package ru.onotole.msuQuizApi.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.onotole.msuQuizApi.jpa.PersonService;
@@ -13,10 +14,10 @@ import java.util.List;
  * Created by onotole on 16/04/2017.
  */
 @RestController
+@RequiredArgsConstructor
 public class PersonController {
 
-    @Autowired
-    private PersonService personService;
+    private final PersonService personService;
 
     @RequestMapping(value = "/user/", method = RequestMethod.POST)
     public void addUser(@RequestBody Person person) {

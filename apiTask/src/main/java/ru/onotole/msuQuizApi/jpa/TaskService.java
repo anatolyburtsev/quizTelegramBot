@@ -1,5 +1,6 @@
 package ru.onotole.msuQuizApi.jpa;
 
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -7,9 +8,11 @@ import org.springframework.stereotype.Service;
 import ru.onotole.msuQuizApi.model.Task;
 
 import javax.persistence.EntityManager;
+import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +20,7 @@ import java.util.List;
  * Created by onotole on 16/04/2017.
  */
 @Service
+@RequiredArgsConstructor
 public class TaskService {
 
     @Value("${delimiter}")
@@ -25,8 +29,7 @@ public class TaskService {
     @Value("${fileWithTasks}")
     private String fileWithTasks;
 
-    @Autowired
-    private TaskRepository taskRepository;
+    private final TaskRepository taskRepository;
 
     public Task getTask(Integer id) {
         return taskRepository.findOne(id);
@@ -48,25 +51,23 @@ public class TaskService {
         taskRepository.deleteAll();
     }
 
-    @SneakyThrows
     public String reloadTasks() {
         return reloadTasksByStringPath(fileWithTasks);
     }
 
-    @SneakyThrows
     public String reloadTasksByStringPath(String file) {
         clear();
-        Path path = FileSystems.getDefault().getPath(file);
+        Path path = Paths.get(file);
         return reloadTasksByPath(path);
     }
 
-    @SneakyThrows
+    @SneakyThrows(IOException.class)
     public String reloadTasksByPath(Path path) {
-        Files.lines(path).forEach(l -> addTaskFromLine(l, delimiter));
+        Files.lines(path).forEach(this::addTaskFromLine);
         return "Loaded " + getAll().size() + " tasks";
     }
 
-    private void addTaskFromLine(String taskLine, String delimiter) {
+    private void addTaskFromLine(String taskLine) {
         String desc = taskLine.split(delimiter)[0];
         Integer answer = Integer.valueOf(taskLine.split(delimiter)[1]);
         addTask(new Task(desc, answer));

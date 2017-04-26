@@ -13,10 +13,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.telegram.telegrambots.api.objects.Message;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by onotole on 23/04/2017.
@@ -61,8 +58,7 @@ public class RequestsToApi {
     }
 
     private String sendPostWith1Param(String url, String key, String value) {
-        Map<String, String> params = new HashMap<>();
-        params.put(key, value);
+        Map<String, String> params = Collections.singletonMap(key, value);
         return sendPostReq(url, params);
     }
 }

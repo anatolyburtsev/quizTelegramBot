@@ -12,6 +12,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,7 +24,7 @@ import java.util.Map;
  */
 public class SendRequests {
 
-    @SneakyThrows
+    @SneakyThrows(IOException.class)
     public static String sendGetReq(String url) {
 //        log.info("make request to " + url);
         System.out.println("make request to " + url);
@@ -42,7 +43,7 @@ public class SendRequests {
         throw new RuntimeException("API " + url + " unavailable");
     }
 
-    @SneakyThrows
+    @SneakyThrows(IOException.class)
     public static String sendPostReq(String url, Map<String, String> inputParams) {
         CloseableHttpClient httpclient = HttpClients.createDefault();
         HttpPost httppost = new HttpPost(url);

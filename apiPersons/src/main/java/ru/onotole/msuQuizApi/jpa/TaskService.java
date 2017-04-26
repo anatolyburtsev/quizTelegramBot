@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import ru.onotole.msuQuizApi.model.Task;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -34,7 +35,6 @@ public class TaskService {
 
     private final static String SIZE_URL = "task/size";
 
-    @SneakyThrows
     public int getTasksAmount() {
         return Integer.valueOf(
                 getResponseByUrl(taskApiUrl + SIZE_URL)
@@ -53,7 +53,7 @@ public class TaskService {
         this.taskApiUrl = taskApiUrl;
     }
 
-    @SneakyThrows
+    @SneakyThrows(IOException.class)
     private String getResponseByUrl(String url) {
         log.info("request to " + url);
         CloseableHttpClient httpclient = HttpClients.createDefault();
