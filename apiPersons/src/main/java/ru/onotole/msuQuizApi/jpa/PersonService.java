@@ -25,7 +25,7 @@ public class PersonService {
 
     private final PersonRepository personRepository;
 
-    private final TaskService taskService;
+    private TaskService taskService;
 
     public Person getByUserId(Long uid) {
         return personRepository.findOne(uid);
@@ -44,7 +44,6 @@ public class PersonService {
         personRepository.findAll().forEach(list::add);
         return list;
     }
-
 
     public Response checkAndNextQuestion(Long id, String answerInputed) {
         log.info("process req from uid: " + id + " msg: " + answerInputed);
@@ -123,6 +122,7 @@ public class PersonService {
         return resultResponse;
     }
 
+
     private Task getNextTask(Person person) {
         Task resultTask;
         Integer nextTaskNumber = person.getNextTaskNumber();
@@ -149,5 +149,9 @@ public class PersonService {
         }
         Collections.shuffle(list);
         return list;
+    }
+
+    public void setTaskService(TaskService taskService) {
+        this.taskService = taskService;
     }
 }
