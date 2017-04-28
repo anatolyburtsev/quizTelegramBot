@@ -7,10 +7,7 @@ import lombok.experimental.Accessors;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -19,11 +16,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 @Entity
 @ToString
-//@Data
 @NoArgsConstructor
 @EqualsAndHashCode(exclude = "id")
 @Getter
-//@Accessors(chain = true)
 public class Task {
 
     public Task(String description, Integer answer) {
@@ -34,6 +29,9 @@ public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
     private Integer id;
+
+    @Lob
+    @Column(length = 20520)
     private String description;
     private Integer answer;
 }
