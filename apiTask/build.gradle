@@ -7,16 +7,22 @@ buildscript {
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		classpath('se.transmode.gradle:gradle-docker:1.2')
 	}
 }
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
+apply plugin: 'docker'
 
 version = '0.0.1-SNAPSHOT'
+targetCompatibility = 1.8
 sourceCompatibility = 1.8
-
+group = 'onotolemobile'
+jar {
+	baseName = 'api_task'
+}
 repositories {
 	mavenCentral()
 }
@@ -31,4 +37,16 @@ dependencies {
 	compileOnly "org.projectlombok:lombok:1.16.16"
 	runtime('org.apache.derby:derby')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
+}
+
+task buildDocker(type: Docker, dependsOn: build) {
+	push = true
+	applicationName = jar.baseName
+	dockerfile = file('src/main/docker/Dockerfile')
+	doFirst {
+		copy {
+			from jar
+			into stageDir
+		}
+	}
 }
