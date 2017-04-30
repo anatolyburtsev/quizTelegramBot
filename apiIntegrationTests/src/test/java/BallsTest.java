@@ -15,8 +15,8 @@ import static org.junit.Assume.assumeThat;
 public class BallsTest {
     private static final Random random = new Random();
     private static final Long UID = Math.abs(random.nextLong());
-    private static final String TASK_API_URL = "http://localhost:8088/";
-    private static final String PERSON_API_URL = "http://localhost:8089/";
+    private static final String TASK_API_URL = Config.TASK_API_URL;
+    private static final String PERSON_API_URL = Config.PERSON_API_URL;
     private static final String GUESS_URL = "user/" + UID + "/guess";
     private Gson gson = new Gson();
 

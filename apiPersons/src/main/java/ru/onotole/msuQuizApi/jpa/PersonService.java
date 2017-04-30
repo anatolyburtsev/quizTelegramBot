@@ -25,6 +25,8 @@ public class PersonService {
 
     private final PersonRepository personRepository;
 
+    // I'd like to make it final, but I'll lost possibility to replace it with mock for testing
+    @Autowired
     private TaskService taskService;
 
     public Person getByUserId(Long uid) {

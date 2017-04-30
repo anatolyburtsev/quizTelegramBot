@@ -23,14 +23,9 @@ import java.io.InputStream;
 @Slf4j
 @Component
 public class TaskService {
-    @Value("${task_api_host}")
-    private String taskApiHost;
+    @Value("#{environment['TASK_API_URL']}")
+    private String taskApiUrl;
 
-    @Value("${task_api_port}")
-    private Integer taskApiPort;
-
-    // TODO fix reading properties from file
-    private String taskApiUrl = "http://localhost:8088/";//taskApiHost + ":" + taskApiPort + "/";
     private final static String TASK_URL = "task/";
 
     private final static String SIZE_URL = "task/size";

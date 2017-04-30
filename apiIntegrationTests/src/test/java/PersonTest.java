@@ -15,8 +15,8 @@ import static org.junit.Assume.assumeThat;
 public class PersonTest {
     private static final Random random = new Random();
     private static final Long UID = Math.abs(random.nextLong());
-    private static final String TASK_API_URL = "http://localhost:8088/";
-    private static final String PERSON_API_URL = "http://localhost:8089/";
+    private static final String TASK_API_URL = Config.TASK_API_URL;
+    private static final String PERSON_API_URL = Config.PERSON_API_URL;
     private static final String GUESS_URL = "user/" + UID + "/guess";
     private Gson gson = new Gson();
 
@@ -46,15 +46,15 @@ public class PersonTest {
 
         httpResponse = SendRequests.sendPostWith1Param(url, "answer", "-100");
         response = gson.fromJson(httpResponse, Response.class);
-        assertEquals(response.getBody(),"Ответ неверный. Попыток осталось: 2 \n");
+        assertEquals(response.getBody(),"Ответ неверный. Попыток осталось: 2\n");
 
         httpResponse = SendRequests.sendPostWith1Param(url, "answer", "-100");
         response = gson.fromJson(httpResponse, Response.class);
-        assertEquals(response.getBody(),"Ответ неверный. Попыток осталось: 1 \n");
+        assertEquals(response.getBody(),"Ответ неверный. Попыток осталось: 1\n");
 
         httpResponse = SendRequests.sendPostWith1Param(url, "answer", "-100");
         response = gson.fromJson(httpResponse, Response.class);
-        assertTrue(response.getBody().startsWith("Ответ неверный. Больше попыток нет.\nСледующее задание:\n"));
+        assertTrue(response.getBody().startsWith("Ответ неверный. Больше попыток нет :(\nСледующее задание:\n"));
 
         httpResponse = SendRequests.sendPostWith1Param(url, "answer", "command123");
         response = gson.fromJson(httpResponse, Response.class);
@@ -62,15 +62,15 @@ public class PersonTest {
 
         httpResponse = SendRequests.sendPostWith1Param(url, "answer", "-100");
         response = gson.fromJson(httpResponse, Response.class);
-        assertEquals(response.getBody(),"Ответ неверный. Попыток осталось: 2 \n");
+        assertEquals(response.getBody(),"Ответ неверный. Попыток осталось: 2\n");
 
         httpResponse = SendRequests.sendPostWith1Param(url, "answer", "-100");
         response = gson.fromJson(httpResponse, Response.class);
-        assertEquals(response.getBody(),"Ответ неверный. Попыток осталось: 1 \n");
+        assertEquals(response.getBody(),"Ответ неверный. Попыток осталось: 1\n");
 
         httpResponse = SendRequests.sendPostWith1Param(url, "answer", "-100");
         response = gson.fromJson(httpResponse, Response.class);
-        assertTrue(response.getBody().startsWith("Ответ неверный. Больше попыток нет.\nСледующее задание:\n"));
+        assertTrue(response.getBody().startsWith("Ответ неверный. Больше попыток нет :(\nСледующее задание:\n"));
 
         httpResponse = SendRequests.sendPostWith1Param(url, "answer", "command123");
         response = gson.fromJson(httpResponse, Response.class);
@@ -78,15 +78,15 @@ public class PersonTest {
 
         httpResponse = SendRequests.sendPostWith1Param(url, "answer", "-100");
         response = gson.fromJson(httpResponse, Response.class);
-        assertEquals(response.getBody(),"Ответ неверный. Попыток осталось: 2 \n");
+        assertEquals(response.getBody(),"Ответ неверный. Попыток осталось: 2\n");
 
         httpResponse = SendRequests.sendPostWith1Param(url, "answer", "-100");
         response = gson.fromJson(httpResponse, Response.class);
-        assertEquals(response.getBody(),"Ответ неверный. Попыток осталось: 1 \n");
+        assertEquals(response.getBody(),"Ответ неверный. Попыток осталось: 1\n");
 
         httpResponse = SendRequests.sendPostWith1Param(url, "answer", "-100");
         response = gson.fromJson(httpResponse, Response.class);
-        assertTrue(response.getBody().startsWith("Ответ неверный. Больше попыток нет.\nСледующее задание:\n"));
+        assertTrue(response.getBody().startsWith("Ответ неверный. Больше попыток нет :(\nСледующее задание:\n"));
 
         httpResponse = SendRequests.sendPostWith1Param(url, "answer", "command123");
         response = gson.fromJson(httpResponse, Response.class);
@@ -94,17 +94,17 @@ public class PersonTest {
 
         httpResponse = SendRequests.sendPostWith1Param(url, "answer", "-100");
         response = gson.fromJson(httpResponse, Response.class);
-        assertEquals(response.getBody(),"Ответ неверный. Попыток осталось: 2 \n");
+        assertEquals(response.getBody(),"Ответ неверный. Попыток осталось: 2\n");
 
         httpResponse = SendRequests.sendPostWith1Param(url, "answer", "-100");
         long elapsedTime = (System.currentTimeMillis() - startTime) / 1000 + 3;
         response = gson.fromJson(httpResponse, Response.class);
-        assertEquals(response.getBody(),"Ответ неверный. Попыток осталось: 1 \n");
+        assertEquals(response.getBody(),"Ответ неверный. Попыток осталось: 1\n");
 
         Thread.sleep(3000);
         httpResponse = SendRequests.sendPostWith1Param(url, "answer", "-100");
         response = gson.fromJson(httpResponse, Response.class);
-        assertEquals(response.getBody(), String.format("Ответ неверный. Больше попыток нет.\nПоздравляю! " +
+        assertEquals(response.getBody(), String.format("Ответ неверный. Больше попыток нет :(\nПоздравляю! " +
                 "Ваша команда command123 прошла игру за 00:00:0%d и набрала баллов: 0", elapsedTime));
 
     }

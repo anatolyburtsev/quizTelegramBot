@@ -22,7 +22,8 @@ import static org.junit.Assume.assumeThat;
  * Created by onotole on 23/04/2017.
  */
 public class TaskTest {
-    private static final String TASK_API_URL = "http://localhost:8088/";
+
+    private static String TASK_API_URL = Config.TASK_API_URL;
     Gson gson = new Gson();
 
     @BeforeClass
