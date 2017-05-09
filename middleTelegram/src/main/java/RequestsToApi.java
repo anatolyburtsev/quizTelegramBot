@@ -15,13 +15,10 @@ import org.telegram.telegrambots.api.objects.Message;
 import java.io.InputStream;
 import java.util.*;
 
-/**
- * Created by onotole on 23/04/2017.
- */
-public class RequestsToApi {
+class RequestsToApi {
     private Gson gson = new Gson();
 
-    public String processInputMessage(String baseUrl, Message message) {
+    String processInputMessage(String baseUrl, Message message) {
         String input = message.getText();
         long uid = message.getChatId();
         String url = baseUrl + "user/" + uid + "/guess";
@@ -36,7 +33,7 @@ public class RequestsToApi {
         HttpPost httppost = new HttpPost(url);
 
         // Request parameters and other properties.
-        List<NameValuePair> params = new ArrayList<NameValuePair>(inputParams.size());
+        List<NameValuePair> params = new ArrayList<>(inputParams.size());
         for (Map.Entry<String, String> entry : inputParams.entrySet())
         {
             params.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));

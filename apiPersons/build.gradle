@@ -16,7 +16,7 @@ apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'docker'
 
-version = '0.0.2-snapshot'
+version = '0.0.3-snapshot'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 group = 'onotolemobile'
