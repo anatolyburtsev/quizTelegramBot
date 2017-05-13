@@ -1,19 +1,25 @@
 package ru.onotole.msuQuizApi.jpa;
 
+import javafx.beans.binding.ObjectExpression;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.onotole.msuQuizApi.model.Person;
-import ru.onotole.msuQuizApi.model.Phrases;
-import ru.onotole.msuQuizApi.model.Response;
-import ru.onotole.msuQuizApi.model.Task;
+import ru.onotole.msuQuizApi.model.*;
 
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
+import static ru.onotole.msuQuizApi.model.Person.EMPTY_COMMAND_NAME_ANSWER_FLAG;
 import static ru.onotole.msuQuizApi.model.Person.POST_LAST_TASK_ANSWER_FLAG;
+import static ru.onotole.msuQuizApi.model.Person.WAITING_COMMAND_NAME_ANSWER_FLAG;
 import static ru.onotole.msuQuizApi.model.Phrases.NEXT_TASK;
+import static ru.onotole.msuQuizApi.model.Phrases.REST_TIME;
 
 /**
  * Created by onotole on 16/04/2017.
@@ -30,7 +36,12 @@ public class PersonService {
     private TaskService taskService;
 
     public Person getByUserId(Long uid) {
-        return personRepository.findOne(uid);
+        Person person = personRepository.findOne(uid);
+        if (person == null) {
+            add(new Person().setId(uid));
+            person = personRepository.findOne(uid);
+        }
+        return person;
     }
 
     public void add(Person person) {
@@ -47,15 +58,26 @@ public class PersonService {
         return list;
     }
 
-    public Response checkAndNextQuestion(Long id, String answerInputed) {
-        log.info("process req from uid: " + id + " msg: " + answerInputed);
+    public Response processRequest(Long id, String answer) {
+        log.info("process req from uid: " + id + " msg: " + answer);
         Person person = getByUserId(id);
-        Response resultResponse;
-        Integer answer;
+        LocalDateTime now = LocalDateTime.now();
 
-        if (person == null) {
-            add(new Person().setId(id));
-            person = getByUserId(id);
+        Response response = checkAndNextQuestion(person, answer);
+        Duration delta = Duration.between(now, person.getStart());
+        if (!Objects.equals(person.getCommandName(), EMPTY_COMMAND_NAME_ANSWER_FLAG) ||
+                ! Objects.equals(person.getCommandName(), WAITING_COMMAND_NAME_ANSWER_FLAG) ||
+                ! Objects.equals(person.getExpectedAnswer(), POST_LAST_TASK_ANSWER_FLAG))
+        response.addPostfix(String.format(REST_TIME, Person.TIME_FOR_GAME - delta.toMinutes()));
+        return response;
+    }
+
+    private Response checkAndNextQuestion(Person person, String answerInputed) {
+        Response resultResponse;
+        LocalDateTime now = LocalDateTime.now();
+        Integer answer;
+        if ("stats".equals(answerInputed)) {
+            return new Response(getParticipantStats());
         }
 
         // Start или что-то типа того пришло
@@ -69,6 +91,7 @@ public class PersonService {
         // пришло название команды
         if (person.getCommandName().equals(Person.WAITING_COMMAND_NAME_ANSWER_FLAG)) {
             person.setCommandName(answerInputed);
+            person.setStart(LocalDateTime.now());
             personRepository.save(person);
             Task nextTask = getNextTask(person);
             resultResponse = new Response(nextTask.getDescription());
@@ -155,5 +178,26 @@ public class PersonService {
 
     public void setTaskService(TaskService taskService) {
         this.taskService = taskService;
+    }
+
+    public String getParticipantStats() {
+        StringBuilder result = new StringBuilder("Название команды, Количество верно решенных, Количество взятых задач, Время в игре\n\n");
+        LocalDateTime now = LocalDateTime.now();
+        List<Person> persons = getAll().stream().sorted(Comparator.comparing(Person::getBalls).reversed())
+                .collect(Collectors.toList());
+        for (int i = 0; i < persons.size(); i++) {
+            result.append(i);
+            result.append(") ");
+            result.append(persons.get(i).getCommandName());
+            result.append(" : ");
+            result.append(persons.get(i).getBalls());
+            result.append(" : ");
+            result.append(taskService.getTasksAmount() - persons.get(i).getTaskOrder().size());
+            result.append(" : ");
+            result.append(Duration.between(now, persons.get(i).getStart()).toMinutes());
+            result.append(" мин");
+            result.append("\n");
+        }
+        return result.toString();
     }
 }

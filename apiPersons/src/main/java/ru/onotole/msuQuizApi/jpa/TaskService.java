@@ -23,8 +23,8 @@ import java.io.InputStream;
 @Slf4j
 @Component
 public class TaskService {
-    @Value("#{environment['TASK_API_URL']}")
-    private String taskApiUrl;
+    //@Value("#{environment['TASK_API_URL']}")
+    private String taskApiUrl="http://localhost:8078/";
 
     private final static String TASK_URL = "task/";
 

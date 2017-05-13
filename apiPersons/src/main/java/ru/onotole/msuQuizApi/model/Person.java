@@ -28,7 +28,8 @@ public class Person {
     public static final Integer INITIAL_TASK_ANSWER_FLAG = -2;
     public static final String WAITING_COMMAND_NAME_ANSWER_FLAG = "WAITING FOR COMMAND NAME 42";
     public static final String EMPTY_COMMAND_NAME_ANSWER_FLAG = "EMPTY COMMAND NAME 42";
-    public static final Integer DEFAULT_ATTEMPTS = 3; //Integer.valueOf(System.getProperty("default_attempts_count"));
+    public static final Integer DEFAULT_ATTEMPTS = 3;
+    public static final Integer TIME_FOR_GAME = 45;
 
     @Id
     private Long id;
@@ -36,7 +37,7 @@ public class Person {
     private LinkedList<Integer> taskOrder;
     private Integer expectedAnswer = INITIAL_TASK_ANSWER_FLAG;
     private Integer balls = 0;
-    private LocalDateTime start = LocalDateTime.now();
+    private LocalDateTime start;// = LocalDateTime.now();
     private LocalDateTime finish;
     private Integer attemptCounter = DEFAULT_ATTEMPTS;
     public void addWinPoint() {

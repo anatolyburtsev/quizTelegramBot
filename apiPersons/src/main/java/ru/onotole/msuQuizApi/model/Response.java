@@ -14,4 +14,7 @@ public class Response {
     public void addPrefix(String prefix) {
         this.body = prefix + "\n" + body;
     }
+    public void addPostfix(String postfix) {
+        this.body = body + "\n" + postfix;
+    }
 }

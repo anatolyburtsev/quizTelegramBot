@@ -1,12 +1,10 @@
 package ru.onotole.msuQuizApi.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.onotole.msuQuizApi.jpa.PersonService;
 import ru.onotole.msuQuizApi.model.Person;
 import ru.onotole.msuQuizApi.model.Response;
-import ru.onotole.msuQuizApi.model.Task;
 
 import java.util.List;
 
@@ -31,12 +29,11 @@ public class PersonController {
 
     @RequestMapping(value = "/user/{id}/guess", method = RequestMethod.POST)
     public Response tryToGuess(@PathVariable Long id, @RequestParam String answer) {
-        return personService.checkAndNextQuestion(id, answer);
+        return personService.processRequest(id, answer);
     }
 
     @RequestMapping(value = "/user/", method = RequestMethod.GET)
     public List<Person> getAll() {
         return personService.getAll();
     }
-
 }

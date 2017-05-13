@@ -13,6 +13,7 @@ public class Phrases {
                                                  "Внимание, время пошло!\n" +
                                                  "Первое задание: ";
     public static final String CONGRATULATION = "Поздравляю! Ваша команда %s прошла игру за %02d:%02d:%02d и набрала баллов: %d";
+    public static final String REST_TIME = "PS. У вас осталось %d минут";
     public static final String WRONG_ANSWER = "Ответ неверный.";
     public static final String WRONG_ANSWER_NO_MORE_ATTEMPTS = WRONG_ANSWER + " Больше попыток нет :(";
     public static final String WRONG_ANSWER_LEFT_ATTEMPTS = WRONG_ANSWER + " Попыток осталось: %s\n";
