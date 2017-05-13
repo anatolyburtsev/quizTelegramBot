@@ -37,7 +37,7 @@ public class Person {
     private LinkedList<Integer> taskOrder;
     private Integer expectedAnswer = INITIAL_TASK_ANSWER_FLAG;
     private Integer balls = 0;
-    private LocalDateTime start;// = LocalDateTime.now();
+    private LocalDateTime start = LocalDateTime.now();
     private LocalDateTime finish;
     private Integer attemptCounter = DEFAULT_ATTEMPTS;
     public void addWinPoint() {

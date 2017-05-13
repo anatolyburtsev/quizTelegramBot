@@ -15,9 +15,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static ru.onotole.msuQuizApi.model.Person.EMPTY_COMMAND_NAME_ANSWER_FLAG;
-import static ru.onotole.msuQuizApi.model.Person.POST_LAST_TASK_ANSWER_FLAG;
-import static ru.onotole.msuQuizApi.model.Person.WAITING_COMMAND_NAME_ANSWER_FLAG;
+import static ru.onotole.msuQuizApi.model.Person.*;
 import static ru.onotole.msuQuizApi.model.Phrases.NEXT_TASK;
 import static ru.onotole.msuQuizApi.model.Phrases.REST_TIME;
 
@@ -64,11 +62,15 @@ public class PersonService {
         LocalDateTime now = LocalDateTime.now();
 
         Response response = checkAndNextQuestion(person, answer);
-        Duration delta = Duration.between(now, person.getStart());
-        if (!Objects.equals(person.getCommandName(), EMPTY_COMMAND_NAME_ANSWER_FLAG) ||
-                ! Objects.equals(person.getCommandName(), WAITING_COMMAND_NAME_ANSWER_FLAG) ||
-                ! Objects.equals(person.getExpectedAnswer(), POST_LAST_TASK_ANSWER_FLAG))
-        response.addPostfix(String.format(REST_TIME, Person.TIME_FOR_GAME - delta.toMinutes()));
+        Duration delta = Duration.between(person.getStart(), now);
+
+        if (! (Objects.equals(person.getCommandName(), EMPTY_COMMAND_NAME_ANSWER_FLAG) ||
+                Objects.equals(person.getCommandName(), WAITING_COMMAND_NAME_ANSWER_FLAG) ||
+                Objects.equals(person.getExpectedAnswer(), POST_LAST_TASK_ANSWER_FLAG) ||
+                answer.equals("stats")
+        )) {
+            response.addPostfix(String.format(REST_TIME, Person.TIME_FOR_GAME - delta.toMinutes()));
+        }
         return response;
     }
 
@@ -79,6 +81,7 @@ public class PersonService {
         if ("stats".equals(answerInputed)) {
             return new Response(getParticipantStats());
         }
+
 
         // Start или что-то типа того пришло
         if (person.getCommandName().equals(Person.EMPTY_COMMAND_NAME_ANSWER_FLAG)) {
@@ -108,6 +111,10 @@ public class PersonService {
                 return new Response(Phrases.INCORRECT_INPUT);
             }
             throw new RuntimeException("что-то явно пошло не так!");
+        }
+
+        if (Duration.between(person.getStart(), now).toMinutes() > Person.TIME_FOR_GAME) {
+            person.setExpectedAnswer(Person.POST_LAST_TASK_ANSWER_FLAG);
         }
 
         //finished game
@@ -194,7 +201,7 @@ public class PersonService {
             result.append(" : ");
             result.append(taskService.getTasksAmount() - persons.get(i).getTaskOrder().size());
             result.append(" : ");
-            result.append(Duration.between(now, persons.get(i).getStart()).toMinutes());
+            result.append(Duration.between(persons.get(i).getStart(), now).toMinutes());
             result.append(" мин");
             result.append("\n");
         }
